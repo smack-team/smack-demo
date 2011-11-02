@@ -1,0 +1,38 @@
+/*
+ * This file is part of smack-demo
+ *
+ * Copyright (C) 2011 Brian McGillion
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public License
+ * version 2.1 as published by the Free Software Foundation.
+ *
+ * This library is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ *
+ * Author: Brian McGillion <brian.mcgillion@intel.com>
+ */
+
+#include "client.h"
+
+#include <QtCore/QCoreApplication>
+#include <QtCore/QtDebug>
+#include <QtCore/QTimer>
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+
+    Client *client = new Client(&a);
+
+    // give ourselves a second before running the client
+    QTimer::singleShot(1000, client, SLOT(run()));
+    return a.exec();
+}

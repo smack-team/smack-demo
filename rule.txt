@@ -1,0 +1,7 @@
+demo_daemon _ w
+_ demo_daemon rx
+demo_client _ w
+_ demo_client xr
+demo_client allow_setState w
+demo_client listen_signal r
+demo_client demo_daemon w
