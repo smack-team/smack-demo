@@ -64,6 +64,15 @@ public slots:
     bool setState(int state);
 
 private:
+
+    /*!
+      * \brief Determine if a client connection has permission to set the ReStart state
+      * \param clientLabel the label that is associated with the client context
+      * \returns true if allowed set restart state
+      */
+    bool isAllowedReStart(const QString &clientLabel);
+
+private:
     //! The main engine to hand off the commands to..
     Engine *engine;
     //! Find the smack label

@@ -25,6 +25,8 @@
 #include "smack-demo-common.h"
 #include "smacklabelif.h"
 
+#include <sys/smack.h>
+
 DBusService::DBusService(Engine *parent)
     :   QObject(parent),
       engine(parent)
@@ -55,26 +57,18 @@ bool DBusService::setState(int state)
         return false;
     }
 
+    QString clientLabel = reply.value();
+
+    qDebug() << "The Dbus label is :  " << clientLabel;
+
     // we now know the context of the connected client so we could do further checks
     // and enable or disable features based on that context.
-    /*
-      #include <sys/smack.h>
-      :
 
-      switch (state)
-      {
-      case SmackDemo::ReStart:
-            if (!hasPermissionToSet(reply.value(), restartLabel)
-                Set some error condition on the DBusConnection and return it to the client
-      break;
-      :
-      :
-      }
-      */
-
-    // lets just print it out
-    qDebug() << "The Dbus label is :  " << reply.value();
-
+    if (state == SmackDemo::ReStart)
+    {
+        if (!isAllowedReStart(clientLabel))
+            return false; //TODO set some error return string to notify the client
+    }
 
     // If it gets this far the client is allowed to set the state with the
     if (engine->setState(state))
@@ -83,4 +77,20 @@ bool DBusService::setState(int state)
         return true;
     }
     return false;
+}
+
+bool DBusService::isAllowedReStart(const QString &clientLabel)
+{
+    int hasAccess;
+    char *selfLabel;
+
+    // determine our own smack context label
+    selfLabel = smack_get_self_label();
+
+    //determine if the connected client has special permission to WRITE to us.
+    hasAccess = smack_have_access(clientLabel.toStdString().c_str(), selfLabel, "W");
+
+    free(selfLabel);
+
+    return (hasAccess == 1);
 }
