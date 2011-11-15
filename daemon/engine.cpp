@@ -90,8 +90,7 @@ void Engine::handleConnection()
     QLocalSocket *sockClient = sockServer->nextPendingConnection();
     connect(sockClient, SIGNAL(disconnected()), sockClient, SLOT(deleteLater()));
 
-    label = smack_get_peer_label(sockClient->socketDescriptor());
-    if (!label)
+    if (smack_new_label_from_socket(sockClient->socketDescriptor(), &label) < 0)
     {
             qDebug() << "Could not read the label of the socket";
             return;

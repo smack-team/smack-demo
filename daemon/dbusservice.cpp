@@ -85,7 +85,8 @@ bool DBusService::isAllowedReStart(const QString &clientLabel)
     char *selfLabel;
 
     // determine our own smack context label
-    selfLabel = smack_get_self_label();
+    if(smack_new_label_from_self(&selfLabel) < 0)
+        return false;
 
     //determine if the connected client has special permission to WRITE to us.
     hasAccess = smack_have_access(clientLabel.toStdString().c_str(), selfLabel, "W");
