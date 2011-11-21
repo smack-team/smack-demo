@@ -23,15 +23,14 @@
 #include "dbusservice.h"
 #include "engine.h"
 #include "smack-demo-common.h"
-#include "smacklabelif.h"
 
-#include <sys/smack.h>
+#include <DBusSmackContext>
+#include <Smack>
 
 DBusService::DBusService(Engine *parent)
     :   QObject(parent),
       engine(parent)
 {
-    labelIf = new SmackLabelIf(this);
 }
 
 DBusService::~DBusService()
@@ -44,20 +43,10 @@ bool DBusService::setState(int state)
         sendErrorReply(QDBusError::NotSupported, "Unknown state requested");
 
     //Determine the name of the service that has connected to us
-    QString serviceName = message().service();
+    QString clientLabel = SmackQt::DBusSmackContext::getCallerSmackContext(*this);
 
-    // ask dbus to get the smack context of the connected service
-    QDBusPendingReply<QString> reply;
-    reply = labelIf->getConnectionLabel(serviceName);
-
-    reply.waitForFinished();
-    if (!reply.isValid())
-    {
-        qDebug() << reply.error().message();
+    if (clientLabel.isEmpty())
         return false;
-    }
-
-    QString clientLabel = reply.value();
 
     qDebug() << "The Dbus label is :  " << clientLabel;
 
@@ -81,17 +70,7 @@ bool DBusService::setState(int state)
 
 bool DBusService::isAllowedReStart(const QString &clientLabel)
 {
-    int hasAccess;
-    char *selfLabel;
+    QString selfLabel = SmackQt::Smack::getOwnContext();
 
-    // determine our own smack context label
-    if(smack_new_label_from_self(&selfLabel) < 0)
-        return false;
-
-    //determine if the connected client has special permission to WRITE to us.
-    hasAccess = smack_have_access(clientLabel.toStdString().c_str(), selfLabel, "W");
-
-    free(selfLabel);
-
-    return (hasAccess == 1);
+    return SmackQt::Smack::hasAccess(clientLabel, selfLabel, QLatin1String("W"));
 }

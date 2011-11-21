@@ -25,7 +25,7 @@
 #include "dbusserviceifadaptor.h"
 #include "smack-demo-common.h"
 
-#include <sys/smack.h>
+#include <Smack>
 #include <QtNetwork/QLocalSocket>
 
 Engine::Engine(QObject *parent)
@@ -85,18 +85,20 @@ bool Engine::startDBus()
 
 void Engine::handleConnection()
 {
-    char *label = NULL;
-
     QLocalSocket *sockClient = sockServer->nextPendingConnection();
     connect(sockClient, SIGNAL(disconnected()), sockClient, SLOT(deleteLater()));
 
-    if (smack_new_label_from_socket(sockClient->socketDescriptor(), &label) < 0)
+    QString label = SmackQt::Smack::getSocketPeerContext(sockClient->socketDescriptor());
+
+    if (label.isEmpty())
     {
-            qDebug() << "Could not read the label of the socket";
-            return;
+        qDebug() << "Could not read the label of the socket";
+        return;
     }
 
     qDebug() << "The socket label is : " << label;
+
+    //COULD DO - test if that label is allowed to write to us
 
     bool result = false;
     qint32 state = SmackDemo::Undefined;
@@ -136,7 +138,7 @@ bool Engine::setState(int state)
     if (state >= SmackDemo::Undefined)
         return false;
 
-    qDebug() << "setState() with state = %d" << state;
+    qDebug() << "setState() = " << state;
 
     return true;
 }

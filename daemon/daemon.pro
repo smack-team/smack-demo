@@ -2,23 +2,20 @@ QT       += core dbus network
 QT       -= gui
 
 TARGET = demo-daemon
-CONFIG   += console link_pkgconfig
+CONFIG   += console smack-qt
 CONFIG   -= app_bundle
 TEMPLATE = app
-PKGCONFIG += libsmack
 
 SOURCES += main.cpp \
     dbusserviceifadaptor.cpp \
     dbusservice.cpp \
-    engine.cpp \
-    smacklabelif.cpp
+    engine.cpp
 
 HEADERS += \
     dbusserviceifadaptor.h \
     dbusservice.h \
     engine.h \
-    smack-demo-common.h \
-    smacklabelif.h
+    smack-demo-common.h
 
 OTHER_FILES += \
     com.smack.demo.xml \
@@ -37,3 +34,5 @@ dbusInterface.path = $$(DESTDIR)/usr/share/dbus-1/interfaces
 dbusInterface.files = com.smack.demo.xml
 
 INSTALLS += target service configuration dbusInterface
+
+
