@@ -25,7 +25,7 @@
 #include "dbusserviceifadaptor.h"
 #include "smack-demo-common.h"
 
-#include <Smack>
+#include <SmackQt>
 #include <QtNetwork/QLocalSocket>
 
 Engine::Engine(QObject *parent)

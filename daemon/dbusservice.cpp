@@ -25,7 +25,7 @@
 #include "smack-demo-common.h"
 
 #include <DBusSmackContext>
-#include <Smack>
+#include <SmackQt>
 
 DBusService::DBusService(Engine *parent)
     :   QObject(parent),
