@@ -43,7 +43,7 @@ bool DBusService::setState(int state)
         sendErrorReply(QDBusError::NotSupported, "Unknown state requested");
 
     //Determine the name of the service that has connected to us
-    QString clientLabel = SmackQt::DBusSmackContext::getCallerSmackContext(*this);
+    QString clientLabel = SmackQt::DBusSmackContext::getCallerSmackContext(this->message());
 
     if (clientLabel.isEmpty())
         return false;
