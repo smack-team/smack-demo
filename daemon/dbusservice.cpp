@@ -42,11 +42,15 @@ bool DBusService::setState(int state)
     if (state >= SmackDemo::Undefined)
         sendErrorReply(QDBusError::NotSupported, "Unknown state requested");
 
+    QString error;
     //Determine the name of the service that has connected to us
-    QString clientLabel = SmackQt::DBusSmackContext::getCallerSmackContext(this->message());
+    QString clientLabel = SmackQt::DBusSmackContext::getCallerSmackContext(this->message(), &error);
 
     if (clientLabel.isEmpty())
+    {
+        qDebug() << "Label could not be found, error is :  " << error;
         return false;
+    }
 
     qDebug() << "The Dbus label is :  " << clientLabel;
 
