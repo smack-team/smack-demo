@@ -1,4 +1,4 @@
 [D-BUS Service]
-User=brian
+User=tizen
 Name=com.smack.demo
 Exec=/usr/bin/demo-daemon

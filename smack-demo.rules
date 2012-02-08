@@ -1,4 +1,4 @@
-demo_daemon _ w
+demo_daemon _ wx
 _ demo_daemon rx
 demo_client _ w
 _ demo_client xr
