@@ -1,1 +1,18 @@
 Demonstrate the use of smack for DBus and socket communications.
+
+Edit service file:
+
+daemon/com.smack.demo.service
+change User= to your username
+
+To build and install:
+
+qmake && make
+sudo make install
+sudo attr -S -s 'SMACK64EXEC' -V 'demo_daemon' /usr/bin/demo-daemon
+sudo attr -S -s 'SMACK64EXEC' -V 'demo_client' /usr/bin/demo-client
+
+To run :
+
+sudo smackload smack-demo.rules
+/usr/bin/demo-client
